@@ -13,7 +13,7 @@ __Features:__
 
 __Softwares Used:__
 
-- Visual Studio code for coding 
+- Visual Studio Code for coding 
 - XAMPP for the Apache Web Server and MYSQL Database
 
 # Files Used
