@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech-to-Text Converter</title>
+    <style>
+        /* CSS styles */
+    </style>
+</head>
+<body>
+    <div class="stage">
+        <div class="microphone-container">
+            <button id="startBtn" class="start-btn">Start Recording</button>
+        </div>
+        <div class="transcription-container">
+            <h2>Transcription:</h2>
+            <p id="transcription" class="transcription">Your speech will appear here...</p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('startBtn').addEventListener('click', () => {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.continuous = true;
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('transcription').textContent = transcript;
+
+                fetch('/speech_to_text/save_input.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        transcript: transcript
+                    })
+                })
+                .then(response => response.text())
+                .then(data => console.log('Server response:', data))
+                .catch(error => console.error('Fetch error:', error));
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+            };
+
+            recognition.start();
+        });
+    </script>
+</body>
+</html>
